@@ -1,34 +1,29 @@
-import React from "react";
+import React, { useEffect } from "react";
 import axios from 'axios';
 import { NodeServer } from "./config";
 import linkedInLoginImage from './linkedin-login-images/Retina/Sign-In-Small---Default.png';
+import { useNavigate } from "react-router-dom";
 
-export default class Home extends React.Component {
+const Home = () => {
+    const navigate = useNavigate()
 
-    constructor(props) {
-        super(props);
-    }
-
-
-    getCodeFromWindowURL = url => {
+    const getCodeFromWindowURL = url => {
         const popupWindowURL = new URL(url);
         return popupWindowURL.searchParams.get("code");
     };
 
-    componentDidMount() {
-        if (window.opener && window.opener !== window) {
-            debugger;
-            const code = this.getCodeFromWindowURL(window.location.href);
-            window.opener.postMessage({ 'type': 'code', 'code': code }, '*')
-            window.close();
-        }
-    }
+    useEffect(() => {
+        const code = getCodeFromWindowURL(window.location.href);
+        navigate('/', { state: { code } })
+        // window.opener.postMessage({ 'type': 'code', 'code': code }, '*')
+    }, [])
 
-    render() {
-        return (
-            <div>
-                <div>Inside home ....</div>
-            </div>
-        )
-    }
+    return (
+        <div>
+            <div>Inside home ....</div>
+        </div>
+    )
 }
+
+export default Home;
+
